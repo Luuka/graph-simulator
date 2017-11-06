@@ -30,11 +30,13 @@
         align-items: center;
     }
 
+    .status {
+        margin: 15px;
+    }
+
     #originalGraph, #warshallGraph{
         justify-content: space-around;
     }
-
-
 
     table, tr, td, th {
         border-collapse: collapse;
@@ -82,12 +84,34 @@
     </div>
     <hr>
     <h2>Graphe original</h2>
+    <hr>
+    <section class="part">
+        <div class="status">
+            <span id="graphStatus"></span>
+        </div>
+
+        <div id="verticeInfo" class="status">
+
+        </div>
+    </section>
+    <hr>
     <section id="originalGraph" class="part">
         <div id="graph" class="graph"></div>
         <div id="matrix"></div>
     </section>
     <hr>
     <h2>Fermeture transitive et CFC</h2>
+    <hr>
+    <section class="part">
+        <div class="status">
+            <span id="warshallGraphStatus"></span>
+        </div>
+
+        <div id="warshallVerticeInfo" class="status">
+
+        </div>
+    </section>
+    <hr>
     <section id="warshallGraph" class="part">
         <div id="graphWarshall" class="graph"></div>
         <div id="warshall"></div>
@@ -134,14 +158,16 @@
         function createGraph(size){
             g = new Graph(size);
             console.log(g);
-            displayGraph(g, "graph");
+            displayGraph(g, "graph", "verticeInfo");
             displayMatrix(g, "matrix");
 
             var gplus = g.transitiveClosing();
 
-            displayGraph(gplus, "graphWarshall");
+            displayGraph(gplus, "graphWarshall", "warshallVerticeInfo");
             displayMatrix(gplus, "warshall");
+            displayGraphInfo(g, 'graphStatus');
         }
+
 
         document.getElementById('addEgde').addEventListener('click', function(){
             var from = parseInt(document.getElementById('from').value);
@@ -152,14 +178,16 @@
 
         function addEgde(from, to){
             g.addEgde(from, to);
-            displayGraph(g, "graph");
+            displayGraph(g, "graph", "verticeInfo");
             displayMatrix(g, "matrix");
+            displayGraphInfo(g, "graphStatus");
 
             var gplus = g.transitiveClosing();
 
-            displayGraph(gplus, "graphWarshall");
+            displayGraph(gplus, "graphWarshall", "warshallVerticeInfo");
             displayMatrix(gplus, "warshall")
             displayCFCS(g, "CFC");
+            displayGraphInfo(gplus, "warshallGraphStatus");
 
             document.getElementById('from').value = "";
             document.getElementById('to').value = "";
@@ -167,7 +195,7 @@
     });
 
 
-    function displayGraph(g, selector){
+    function displayGraph(g, selector, verticeInfoSelector){
         var nodesDataset = new vis.DataSet(g.prepareNodesDataSet());
         var edgesDataset = new vis.DataSet(g.prepareEdgesDataSet());
 
@@ -179,6 +207,33 @@
         };
         var options = {};
         var network = new vis.Network(container, data, options);
+
+        network.on( 'click', function(properties) {
+            displayVerticeInfo(g,properties.nodes[0], verticeInfoSelector);
+        });
+    }
+
+    function displayGraphInfo(g, selector) {
+        var graphStatus = "";
+        if(g.isEmpty()){
+            graphStatus = "Le graphe est vide et contient "+g.size()+" sommets.";
+        }else{
+            graphStatus = "Le graphe contient "+g.size()+" sommets et "+g.edgeCount()+" arcs.";
+        }
+        document.getElementById(selector).innerHTML = graphStatus;
+    }
+
+    function displayVerticeInfo(g,v, verticeInfoSelector){
+
+        var html = "";
+
+        html += "<strong>Successeurs de "+v+"</strong> : " + g.getSuccessors(v)+"<br />";
+        html += "<strong>Prédécesseurs de "+v+"</strong> : " + g.getPredecessors(v)+"<br />";
+        html += "<strong>Degré sortant de "+v+"</strong> : " + g.getOutgoingDegree(v)+"<br />";
+        html += "<strong>Degré entrant de "+v+"</strong> : " + g.getIncomingDegree(v)+"<br />";
+
+
+        document.getElementById(verticeInfoSelector).innerHTML = html;
     }
 
     function displayMatrix(g, selector){

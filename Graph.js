@@ -14,12 +14,99 @@ class Graph {
         return this.matrix.length;
     }
 
+    edgeCount(){
+
+        var edgeCount = 0;
+        for(var i = 1;i<=this.size();i++){
+            for(var j = 1;j<=this.size();j++){
+                if(this.isEdge(i, j)){
+                    edgeCount++;
+                }
+            }
+        }
+
+        return edgeCount;
+    }
+
     addEgde(a,b){
         this.matrix[a-1][b-1] = 1;
     }
 
+    removeEdge(a,b){
+        this.matrix[a-1][b-1] = 0;
+    }
+
+    isEmpty(){
+        for(var i = 1;i<=this.size();i++){
+            for(var j = 1;j<=this.size();j++){
+                if(this.isEdge(i, j)){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     isEdge(a,b){
         return this.matrix[a-1][b-1] > 0;
+    }
+
+    isVertice(a){
+        if(a > 0 && a <= size()){
+            return true;
+        }
+
+        return false;
+    }
+
+    getIncomingDegree(a){
+
+        var degree = 0;
+
+        for(var j = 1;j<=this.size();j++){
+            if(this.isEdge(j, a)){
+                degree++;
+            }
+        }
+
+        return degree;
+    }
+
+    getOutgoingDegree(a){
+        var degree = 0;
+
+        for(var j = 1;j<=this.size();j++){
+            if(this.isEdge(a, j)){
+                degree++;
+            }
+        }
+
+        return degree;
+    }
+
+    getSuccessors(a){
+        var vertices = [];
+
+        for(var j = 1;j<=this.size();j++){
+            if(this.isEdge(a, j)){
+                vertices.push(j);
+            }
+        }
+
+        return vertices;
+    }
+
+    getPredecessors(a){
+        var vertices = [];
+
+        for(var j = 1;j<=this.size();j++){
+            if(this.isEdge(j, a)){
+                vertices.push(j);
+            }
+        }
+
+        return vertices;
     }
 
     clone(){
@@ -85,7 +172,7 @@ class Graph {
         return cfcs;
     }
 
-    prepareNodesDataSet() {
+    prepareNodesDataSet(){
         var nodes = [];
         for(var i=0;i<this.size();i++){
             nodes.push({id:i+1, label:(i+1).toString()});
@@ -94,7 +181,7 @@ class Graph {
         return nodes;
     }
 
-    prepareEdgesDataSet() {
+    prepareEdgesDataSet(){
         var edges = [];
         for(var i=0;i<this.size();i++){
             for(var j=0;j<this.size();j++){
@@ -129,5 +216,4 @@ class Graph {
 
         return ret;
     }
-
 }

@@ -7,6 +7,7 @@ class Graph {
     constructor(size) {
         this.matrix = [];
 
+        //On remplit une matrice de taille size*size de 0 pour créer un graphe vide
         for(let i = 0;i<size;i++){
             this.matrix.push([]);
             for(let j = 0;j<size;j++){
@@ -30,9 +31,12 @@ class Graph {
     edgeCount(){
 
         var edgeCount = 0;
+        //Pour tout les arcs possibles dans le graphe
         for(var i = 1;i<=this.size();i++){
             for(var j = 1;j<=this.size();j++){
+                //On vérifie si l'arc existe
                 if(this.isEdge(i, j)){
+                    //et on incrémente un compteur
                     edgeCount++;
                 }
             }
@@ -64,8 +68,10 @@ class Graph {
     * @return TRUE si le graphe est vide | FALSE sinon
     */
     isEmpty(){
+        //Pour tout les arcs possibles dans un graphe
         for(var i = 1;i<=this.size();i++){
             for(var j = 1;j<=this.size();j++){
+                //Si un arc existe c'est que le graphe n'est pas vide
                 if(this.isEdge(i, j)){
                     return false;
                 }
@@ -80,6 +86,7 @@ class Graph {
     * @return TRUE si l'arc existe | FALSE sinon
     */
     isEdge(a,b){
+        //Si une case de la matrice est différente de 0 c'est que l'arc existe
         return this.matrix[a-1][b-1] > 0;
     }
 
@@ -88,6 +95,7 @@ class Graph {
     * @return TRUE si le sommet est vide | FALSE sinon
     */
     isVertice(a){
+
         if(a > 0 && a <= size()){
             return true;
         }
@@ -102,8 +110,11 @@ class Graph {
     getIncomingDegree(a){
         var degree = 0;
 
+        //Pour tous les prédécesseurs possibles d'un sommet
         for(var j = 1;j<=this.size();j++){
+            //On vérifie si un arc existe
             if(this.isEdge(j, a)){
+                //Et on incrémente un compteur
                 degree++;
             }
         }
@@ -119,8 +130,11 @@ class Graph {
         var degree = 0;
 
         for(var j = 1;j<=this.size();j++){
+            //Pour tous les succésseurs possibles d'un sommet
             if(this.isEdge(a, j)){
+                //On vérifie si un arc existe
                 degree++;
+                //Et on incrémente un compteur
             }
         }
 
@@ -134,8 +148,11 @@ class Graph {
     getSuccessors(a){
         var vertices = [];
 
+        //Pour tous les succésseurs possibles d'un sommet
         for(var j = 1;j<=this.size();j++){
+            //On vérifie si un arc existe
             if(this.isEdge(a, j)){
+                //Et on place ce sommet dans un tableau
                 vertices.push(j);
             }
         }
@@ -150,8 +167,11 @@ class Graph {
     getPredecessors(a){
         var vertices = [];
 
+        //Pour tous les prédécesseurs possibles d'un sommet
         for(var j = 1;j<=this.size();j++){
+            //On vérifie si un arc existe
             if(this.isEdge(j, a)){
+                //Et on place ce sommet dans un tableau
                 vertices.push(j);
             }
         }
@@ -164,11 +184,14 @@ class Graph {
     * @return un nouveau graphe avec les mêmes sommets et les mêmes arcs
     */
     clone(){
+        //On crée un nouveau graphe de la taille de l'actuel
         var G = new Graph(this.size());
 
+        //Pour tous les arcs
         for(var i = 1;i<=this.size();i++){
             for(var j = 1;j<=this.size();j++){
                 if(this.isEdge(i, j)){
+                    //On les recopient dans le nouveau graphe
                     G.addEgde(i,j);
                 }
             }
@@ -184,9 +207,12 @@ class Graph {
         var G = this.clone();
         var n = G.size();
 
+        //Pour tous les noeuds
         for(var i=0;i<n;i++){
+            //Et tous les arcs possibles
             for(var x=0;x<n;x++){
                 for(var y=0;y<n;y++){
+                    //On crée un arc entre prédecesseurs et succésseurs du sommet
                     G.matrix[x][y] = G.matrix[x][y] + (G.matrix[x][i] * G.matrix[i][y]);
                 }
             }
@@ -200,33 +226,47 @@ class Graph {
     * @return une liste de CFC
     */
     searchCFC(){
+        //On applique une fermeture transitive sur le graphe
+        //On a ainsi tous les chemins possibles d'un graphe
         let G = this.transitiveClosing();
         let n = G.size();
         let NE = [];
+
+        //On remplit un tableau de noeuds à traiter
         for(var i=0;i<this.size();i++){
             NE.push(i+1);
         }
         let cfcs = [];
 
+        //Pour tous les sommets
         for(var i=1;i<=n;i++){
 
             var index = NE.indexOf(i);
 
+            //Si il est encore présent dans le tableau de noeuds à traiter
+            //Donc qu'il n'est pas encore dans une CFC
             if(index > -1){
+                //On crée une nouvelle CFC
                 var cfc = [];
+                //Et on supprime le sommet du tableau des noeuds à traiter
                 cfc.push(i);
                 NE.splice(index, 1);
 
+                //Si le sommet est dans un cycle
                 if(G.isEdge(i,i)){
+                    //On cherche pour tous les sommets après celui-ci
                     for(var j=i+1;j<=n+1;j++){
+                        //Si il est dans le même cycle
                         if(G.isEdge(i,j) && G.isEdge(j,i)){
+                            //dans ce cas on ajoute le sommet à la cfc en cours
                             cfc.push(j);
+                            //Et on supprime le sommet du tableau des noeuds à traiter
                             index = NE.indexOf(j);
                             NE.splice(index,1);
                         }
                     }
                 }
-
+                //On ajoute la CFC à la liste des Composantes Fortement Connexes
                 cfcs.push(cfc);
             }
         }
@@ -240,6 +280,7 @@ class Graph {
     */
     prepareNodesDataSet(){
         var nodes = [];
+        //On crée un liste des sommets existants
         for(var i=0;i<this.size();i++){
             nodes.push({id:i+1, label:(i+1).toString()});
         }
@@ -253,8 +294,10 @@ class Graph {
     */
     prepareEdgesDataSet(){
         var edges = [];
+        //Pour tout les sommets
         for(var i=0;i<this.size();i++){
             for(var j=0;j<this.size();j++){
+                //On vérifie l'éxistence de chaque arc possible
                 if(this.isEdge(i+1, j+1)){
                     edges.push({from: i+1, to: j+1, arrows:"to"})
                 }
@@ -276,10 +319,8 @@ class Graph {
         }
 
         ret = ret + "</tr></thead><tbody>";
-
         for(var i=0;i<this.size();i++){
             ret = ret + "<tr><th>"+(i+1)+"</th>";
-
             for(var j=0;j<this.size();j++){
                 ret = ret + "<td>"+(this.matrix[i][j] > 0 ? "<strong>1</strong>" : "0")+"</td>";
             }

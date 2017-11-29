@@ -1,4 +1,9 @@
 class Graph {
+
+    /**
+    * Constructeur de la classe Graph
+    * @param size : Taille du nouveau graphe
+    */
     constructor(size) {
         this.matrix = [];
 
@@ -10,10 +15,18 @@ class Graph {
         }
     }
 
+    /**
+    * Retourne la taille du graphe
+    * @return le nombre de noeuds du graphe
+    */
     size(){
         return this.matrix.length;
     }
 
+    /**
+    * Retourne le nombre d'arcs
+    * @return le nombre d'arcs du graphe
+    */
     edgeCount(){
 
         var edgeCount = 0;
@@ -28,14 +41,28 @@ class Graph {
         return edgeCount;
     }
 
+    /**
+    * Ajoute un arc entre deux points
+    * @param a : point de départ de l'arc
+    * @param b : point d'arrivée de l'arc
+    */
     addEgde(a,b){
         this.matrix[a-1][b-1] = 1;
     }
 
+    /**
+    * Supprime un arc du graphe
+    * @param a : point de départ de l'arc
+    * @param b : point d'arrivée de l'arc
+    */
     removeEdge(a,b){
         this.matrix[a-1][b-1] = 0;
     }
 
+    /**
+    * Vérifie si un graphe contient des sommets ou si il est vide
+    * @return TRUE si le graphe est vide | FALSE sinon
+    */
     isEmpty(){
         for(var i = 1;i<=this.size();i++){
             for(var j = 1;j<=this.size();j++){
@@ -48,10 +75,18 @@ class Graph {
         return true;
     }
 
+    /**
+    * Vérifie si un arc éxiste entre deux points
+    * @return TRUE si l'arc existe | FALSE sinon
+    */
     isEdge(a,b){
         return this.matrix[a-1][b-1] > 0;
     }
 
+    /**
+    * Vérifie si un graphe contient un sommet en particulier
+    * @return TRUE si le sommet est vide | FALSE sinon
+    */
     isVertice(a){
         if(a > 0 && a <= size()){
             return true;
@@ -60,8 +95,11 @@ class Graph {
         return false;
     }
 
+    /**
+    * Calcul le dégré entrant d'un sommet
+    * @return la valeur du degré entrant d'un sommet
+    */
     getIncomingDegree(a){
-
         var degree = 0;
 
         for(var j = 1;j<=this.size();j++){
@@ -73,6 +111,10 @@ class Graph {
         return degree;
     }
 
+    /**
+    * Calcul le dégré sortant d'un sommet
+    * @return la valeur du degré sortant d'un sommet
+    */
     getOutgoingDegree(a){
         var degree = 0;
 
@@ -85,6 +127,10 @@ class Graph {
         return degree;
     }
 
+    /**
+    * Calcul Liste les successeurs d'un sommet
+    * @return une liste de sommets
+    */
     getSuccessors(a){
         var vertices = [];
 
@@ -97,6 +143,10 @@ class Graph {
         return vertices;
     }
 
+    /**
+    * Liste les prédécesseurs d'un sommet
+    * @return une liste de sommets
+    */
     getPredecessors(a){
         var vertices = [];
 
@@ -109,6 +159,10 @@ class Graph {
         return vertices;
     }
 
+    /**
+    * Crée un clone du graphe
+    * @return un nouveau graphe avec les mêmes sommets et les mêmes arcs
+    */
     clone(){
         var G = new Graph(this.size());
 
@@ -122,6 +176,10 @@ class Graph {
         return G;
     }
 
+    /**
+    * Calcul la fermeture transitive d'un graphe
+    * @return le graphe fermé
+    */
     transitiveClosing(){
         var G = this.clone();
         var n = G.size();
@@ -137,6 +195,10 @@ class Graph {
         return G;
     }
 
+    /**
+    * Cherche la liste des CFC
+    * @return une liste de CFC
+    */
     searchCFC(){
         let G = this.transitiveClosing();
         let n = G.size();
@@ -172,6 +234,10 @@ class Graph {
         return cfcs;
     }
 
+    /**
+    * Prépare les données pour Vis.js
+    * @return une liste de sommets
+    */
     prepareNodesDataSet(){
         var nodes = [];
         for(var i=0;i<this.size();i++){
@@ -181,6 +247,10 @@ class Graph {
         return nodes;
     }
 
+    /**
+    * Prépare les arcs pour Vis.js
+    * @return une liste d'arcs
+    */
     prepareEdgesDataSet(){
         var edges = [];
         for(var i=0;i<this.size();i++){
@@ -194,6 +264,10 @@ class Graph {
         return edges;
     }
 
+    /**
+    * Prépare l'affichage de la matrice d'adjacence d'un graphe
+    * @return Un tableau HTML
+    */
     asHTMLTable(){
         var ret = "<table><thead><tr><th></th>";
 

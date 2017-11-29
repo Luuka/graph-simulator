@@ -110,7 +110,7 @@ class GraphController {
         if(g.isEmpty()){
             graphStatus = "Le graphe est vide et contient "+g.size()+" sommets.";
         }else{
-            graphStatus = "Le graphe contient "+this.g.size()+" sommets et "+this.g.edgeCount()+" arcs.";
+            graphStatus = "Le graphe contient "+this.g.size()+" sommets et "+g.edgeCount()+" arcs.";
         }
         document.getElementById(selector).innerHTML = graphStatus;
     }
